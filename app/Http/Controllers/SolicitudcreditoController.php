@@ -26,6 +26,7 @@ class SolicitudcreditoController extends Controller
             // Obtener todas las solicitudes de crédito asociadas al cliente, que no estén en estado 'A'
             $solicitud['solicitudcredito'] = solicitudcredito::where('cliente_id', $clienteId)
             ->where('estado', '!=', 'A')
+            ->orWhereNull('estado')
             ->get();
         }
 
