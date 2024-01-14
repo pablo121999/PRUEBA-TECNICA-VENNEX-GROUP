@@ -11,8 +11,11 @@ class admincontroller extends Controller
     {
 
         if (auth()->check() && (auth()->user()->rol == 'gerente')) {
-            // Buscar todos los usuarios cuyo rol no sea 'admin'
-            $datos['usuarios'] = User::where('rol', '!=', 'admin')->get();
+            // Buscar todos los usuarios cuyo rol no sea 'admin' y si el rol es null traiga el datos
+            $datos['usuarios'] = User::where('rol', '!=', 'admin')
+            ->orWhereNull('rol')
+            ->get();
+
         } else {
             $datos['usuarios'] = User::all();
         }
