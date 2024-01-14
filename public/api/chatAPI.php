@@ -4,8 +4,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pregunta = $_POST['mensaje'];
 
-    $openaiApiKey = "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";
-    //$openaiApiKey = "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";
+    $openaiApiKey = "agrega la key aca";
 
     $url = 'https://api.openai.com/v1/chat/completions';
 
@@ -52,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     curl_close($ch);
 
-    //echo $respuesta;
-    echo $response;
+    echo $respuesta;
+   // echo $response;
 
 
 
