@@ -9,8 +9,8 @@
     <img src="https://cdn-icons-png.flaticon.com/512/3635/3635995.png" class="mx-auto mt-8" alt="Descripción de la imagen">
 
     <ul class="flex justify-center mt-8 space-x-4">
-        <li><a href="{{ route('credito.index') }}" class="btn btn-primary">Ver Créditos</a></li>
-        <li><a href="{{ route('solicitacredito.index') }}" class="btn btn-primary">Solicitar Crédito</a></li>
+        <li><a href="{{ route('credito.index') }}" class="btn btn-success">Ver Créditos</a></li>
+        <li><a href="{{ route('solicitacredito.index') }}" class="btn btn-warning">Solicitar Crédito</a></li>
 
     </ul>
 </div>

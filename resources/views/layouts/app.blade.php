@@ -59,7 +59,7 @@
                 @else
                     <a href="{{ route('login.index') }}" class="btn btn-primary">Iniciar sesión</a>
                     <span class="mx-2"></span>
-                    <a href="{{ route('register.index') }}" class="btn btn-primary">Regístrate</a>
+                    <a href="{{ route('register.index') }}" class="btn btn-success">Regístrate</a>
                 @endif
 
 
