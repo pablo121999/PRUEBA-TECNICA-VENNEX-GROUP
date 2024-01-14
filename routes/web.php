@@ -43,7 +43,7 @@ Route::get('/admin', [AdminController::class, 'index'])
 
 
 Route::get('/registrousuario', [AdminController::class, 'registro_usuario'])
-    ->middleware('auth.admin')
+    ->middleware('auth')
     ->name('admin.registrousuario');
 
 Route::post('/registrousuario', [AdminController::class, 'store'])
