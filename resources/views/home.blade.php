@@ -4,7 +4,7 @@
 
 
 <div class="text-center">
-    <h1 class="text-5xl pt-24">Welcome to the Bank</h1>
+    <h1 class="text-5xl pt-19">Welcome to the Bank</h1>
 
     <img src="https://cdn-icons-png.flaticon.com/512/3635/3635995.png" class="mx-auto mt-8" alt="Descripción de la imagen">
 
