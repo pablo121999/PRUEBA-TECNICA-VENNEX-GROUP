@@ -5,11 +5,13 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SolicitudcreditoController;
+use App\Http\Controllers\creditoController;
 
 
 Route::get('/', function () {
     return view('home');
-})->middleware('auth');
+})->middleware('auth')
+->name('home');
 
 Route::get('/register', [RegisterController::class, 'create'])
     ->middleware('guest')
@@ -36,7 +38,7 @@ Route::get('/logout', [SessionsController::class, 'destroy'])
 
 
 Route::get('/admin', [AdminController::class, 'index'])
-    ->middleware('auth.admin')
+    ->middleware('auth')
     ->name('admin.index');
 
 
@@ -83,12 +85,10 @@ Route::get('/editarusuario/{id}', [AdminController::class, 'editarUsuario'])
     Route::get('/solicitacrediteliminar/{id}', [SolicitudcreditoController::class, 'destroy'])
     ->name('solicitacredito.destroy');
 
-/*
-    Route::get('/solicitacreditoupdate/{id}', [SolicitudcreditoController::class, 'update'])
+
+    Route::get('/creditoindex', [creditoController::class, 'index'])
     ->middleware('auth')
-    ->name('solicitacredito.update'); */
-
-
+    ->name('credito.index');
 
 
 

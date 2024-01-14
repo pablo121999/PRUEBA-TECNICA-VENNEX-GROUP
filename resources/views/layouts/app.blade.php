@@ -17,41 +17,53 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand font-bold" href="#">Banco</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
-            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
+        <div class="container-fluid">
+            <a class="navbar-brand font-bold" href="{{ route('home') }}">Banco</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ route('admin.index') }}">Home <span
-                            class="sr-only">(current)</span></a>
-                </li>
+                    @if (auth()->check())
 
-                @if (auth()->check())
+                        <li class="nav-item active">
+                            <a class="nav-link active" aria-current="page" href="{{ route('home') }}">Inicio<span
+                                    class="sr-only">(current)</span></a>
+                        </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Créditos Aprobados</a>
+                            <a class="nav-link" href="{{ route('credito.index') }}">Créditos Aprobados</a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('solicitacredito.index') }}">Solicitud de Crédito</a>
                         </li>
+                        @if (auth()->check() && (auth()->user()->rol == 'gerente' || auth()->user()->rol == 'admin'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.index') }}">Usuarios</a>
+                            </li>
+                        @endif
+                    @endif
+
+
+                </ul>
+
+                <!-- checkea si estoy logeado -->
+                @if (auth()->check())
+                    <p class="text-xl">Bienvenido@ <b>{{ auth()->user()->name }}</b></p>
+                    <span class="mx-2"></span>
+                    <a href="{{ route('login.destroy') }}" class="btn btn-danger">Cerrar sesión</a>
+                @else
+                    <a href="{{ route('login.index') }}" class="btn btn-primary">Iniciar sesión</a>
+                    <span class="mx-2"></span>
+                    <a href="{{ route('register.index') }}" class="btn btn-primary">Regístrate</a>
                 @endif
 
-            </ul>
-            <!-- checkea si estoy logeado -->
-            @if (auth()->check())
-                <p class="text-xl">Bienvenid@ <b>{{ auth()->user()->name }}</b></p>
-                <span class="mx-2"></span>
-                <a href="{{ route('login.destroy') }}" class="btn btn-danger">Cerrar sesió</a>
-            @else
-                <a href="{{ route('login.index') }}" class="btn btn-primary">Login</a>
-                <span class="mx-2"></span>
-                <a href="{{ route('register.index') }}" class="btn btn-primary">Regístrate</a>
-            @endif
 
+            </div>
         </div>
     </nav>
 

@@ -5,10 +5,10 @@
 @section('content')
 
     <br>
-    @if (auth()->check() && (auth()->user()->rol == 'cliente' ))
-    <div class="container  col-md-11 d-flex justify-content-end">
-        <a href="{{ route('solicitacredito.create') }}" class="btn btn-primary">Solicitar Credito</a>
-    </div>
+    @if (auth()->check() && (auth()->user()->rol == 'cliente' || auth()->user()->rol == null))
+        <div class="container  col-md-11 d-flex justify-content-end">
+            <a href="{{ route('solicitacredito.create') }}" class="btn btn-primary">Solicitar Credito</a>
+        </div>
     @endif
 
     <br>
@@ -21,15 +21,14 @@
             <thead>
                 <tr>
                     <th scope="col">id</th>
-                    <th scope="col">cliente_id</th>
-                    <th scope="col">valor_credito</th>
-                    <th scope="col">cuotas</th>
-                    <th scope="col">descripcion</th>
-                    <th scope="col">estado</th>
-                    <th scope="col">fecha solicitud</th>
-                    <th scope="col">tipo_credito_id</th>
-                    <th scope="col">observaciones_asesor</th>
-
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Valor del crédito</th>
+                    <th scope="col">Cuotas</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Fecha de solicitud</th>
+                    <th scope="col">tipo de crédito</th>
+                    <th scope="col">Observaciones del asesor</th>
                     <th scope="col">acciones</th>
                 </tr>
             </thead>
@@ -50,7 +49,7 @@
                             @endif
                         @endforeach
 
-                        <td>${{ $so->valor_credito }}</td>
+                        <td>${{ number_format($so->valor_credito, 0, ',', '.') }}</td>
                         <td>{{ $so->cuotas }}</td>
                         <td>{{ $so->descripcion }}</td>
 
@@ -58,12 +57,13 @@
                             <td>Aprobado</td>
                         @elseif ($so->estado == 'C')
                             <td>Cancelado</td>
+                        @elseif ($so->estado == 'R')
+                            <td>Rechazado</td>
                         @elseif ($so->estado == null)
-                            <td> En revisión </td>
+                            <td> Pendiente de aprobación </td>
                         @endif
 
                         <td>{{ $so->fecha_solicitud }}</td>
-
 
 
                         @foreach ($tipocredito as $tipo)

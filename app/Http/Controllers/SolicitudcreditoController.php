@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\credito;
 
-;
 use App\Models\tipocredito;
 use App\Models\solicitudcredito;
 use Illuminate\Http\Request;
@@ -17,7 +16,21 @@ class SolicitudcreditoController extends Controller
      */
     public function index()
     {
-        $solicitud['solicitudcredito'] = solicitudcredito::all();
+
+        if (auth()->check() && (auth()->user()->rol == 'gerente' || auth()->user()->rol == 'admin' || auth()->user()->rol == 'asesor')) {
+            $solicitud['solicitudcredito'] = solicitudcredito::all();
+        } else {
+
+            // Obtener el ID del usuario autenticado
+            $clienteId = auth()->user()->id;
+            // Obtener todas las solicitudes de crédito asociadas al cliente, que no estén en estado 'A'
+            $solicitud['solicitudcredito'] = solicitudcredito::where('cliente_id', $clienteId)
+            ->where('estado', '!=', 'A')
+            ->get();
+        }
+
+
+
         $user['user'] = User::all();
         $tipocredito['tipocredito'] = tipocredito::all();
 
@@ -118,39 +131,54 @@ class SolicitudcreditoController extends Controller
 
         $solicitudcredito->update();
 
-        //consultar solicitudes en estado A aprobadas
-        $solicitudesEnEstadoA = solicitudcredito::where('estado', 'A')->get();
-        $tipocredito = tipocredito::all();
-        // guardar credito aprobados en credito
 
-        if ($solicitudesEnEstadoA) {
+        if (auth()->check() && (auth()->user()->rol == 'gerente' || auth()->user()->rol == 'asesor')) {
 
-            foreach ($solicitudesEnEstadoA as $soli) {
+            // Consultar solicitudes en estado A aprobadas
+            $solicitudesEnEstadoA = solicitudcredito::where('estado', 'A')->get();
+            $creditos = credito::all();
+            $tipocredito = tipocredito::all();
 
-                $credito = new credito();
-                $credito->numero_cuenta = $soli->cliente_id;
-                $credito->valor_credito = $soli->valor_credito;
-                $credito->numero_cuotas = $soli->cuotas;
+            // Guardar créditos aprobados en crédito
+            if ($solicitudesEnEstadoA) {
+                foreach ($solicitudesEnEstadoA as $soli) {
+                    // Buscar un crédito que coincida con la solicitud actual
+                    $creditoCoincidente = $creditos->first(function ($credito) use ($soli) {
+                        return $credito->valor_credito == $soli->valor_credito &&
+                            $credito->numero_cuotas == $soli->cuotas &&
+                            $credito->cliente_id == $soli->cliente_id &&
+                            $credito->fecha_aprobacion == $soli->updated_at;
+                    });
 
-                // Buscar el tipo de crédito correspondiente en la colección de tipos de crédito
-                $tipoCredito = $tipocredito->firstWhere('id', $soli->tipo_credito_id);
+                    // Si no hay un crédito coincidente, crear uno nuevo
+                    if (!$creditoCoincidente) {
+                        $numeroleatorio_cuentabancaria = rand(1000000000, 9999999999);
 
-                // Verificar si se encontró el tipo de crédito
-                if ($tipoCredito) {
+                        $credito = new credito();
+                        $credito->numero_cuenta = $numeroleatorio_cuentabancaria;
+                        $credito->valor_credito = $soli->valor_credito;
+                        $credito->numero_cuotas = $soli->cuotas;
 
-                    // Calcular el valor total de cada cuota, incluyendo el interés
-                    $valorTotalCuota = $soli->valor_credito * (1 + ($tipoCredito->interes / 100)) / $soli->cuotas;
-                    $credito->valor_cuota = $valorTotalCuota;
+                        // Buscar el tipo de crédito correspondiente en la colección de tipos de crédito
+                        $tipoCredito = $tipocredito->firstWhere('id', $soli->tipo_credito_id);
 
+                        // Verificar si se encontró el tipo de crédito
+                        if ($tipoCredito) {
+                            // Calcular el valor total de cada cuota, incluyendo el interés
+                            $valorTotalCuota = $soli->valor_credito * (1 + ($tipoCredito->interes / 100)) / $soli->cuotas;
+                            $credito->valor_cuota = $valorTotalCuota;
+                        }
+
+                        $credito->cliente_id = $soli->cliente_id;
+                        $credito->fecha_aprobacion = $soli->updated_at;
+                        $credito->quien_aprobo_id = auth()->user()->id;
+                        $credito->tipo_credito_id = $soli->tipo_credito_id;
+
+                        $credito->save();
+                    }
                 }
-
-                $credito->cliente_id = $soli->cliente_id;
-                $credito->fecha_aprobacion = $soli->updated_at;
-                $credito->quien_aprobo_id = auth()->user()->id;
-                $credito->tipo_credito_id = $soli->tipo_credito_id;
-
-                $credito->save();
             }
+
         }
 
         return redirect()->route('solicitacredito.index')->with('success', 'Usuario actualizado correctamente');

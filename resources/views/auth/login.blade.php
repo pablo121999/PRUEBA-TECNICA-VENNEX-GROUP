@@ -29,7 +29,7 @@ rounded-lg shadow-lg">
             @enderror
 
             <button type="submit"
-                class="btn btn-primary rounded-md w-full text-lg text-white font-semibold p-2 my-3 hover:bg-indigo-600">Send</button>
+                class="btn btn-primary rounded-md w-full text-lg text-white font-semibold p-2 my-3 hover:bg-indigo-600">Iniciar sesión</button>
 
 
 

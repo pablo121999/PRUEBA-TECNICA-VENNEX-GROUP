@@ -10,7 +10,12 @@ class admincontroller extends Controller
     public function index()
     {
 
-        $datos['usuarios'] = User::all();
+        if (auth()->check() && (auth()->user()->rol == 'gerente')) {
+            // Buscar todos los usuarios cuyo rol no sea 'admin'
+            $datos['usuarios'] = User::where('rol', '!=', 'admin')->get();
+        } else {
+            $datos['usuarios'] = User::all();
+        }
 
         return view('admin/index', $datos);
     }
@@ -82,7 +87,7 @@ class admincontroller extends Controller
     public function eliminaUsuario($id)
     {
         $usuario = User::find($id);
-       
+
         if (!$usuario) {
             // Manejar el caso en el que el usuario no existe
             return redirect()->route('admin.index')->with('error', 'Usuario no encontrado');

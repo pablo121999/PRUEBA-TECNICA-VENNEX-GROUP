@@ -11,7 +11,7 @@ rounded-lg shadow-lg">
 
         <h1 class="text-3xl text-center font-bold">Editar Solicitud de credito</h1>
 
-        <form class="mt-4"  method="POST"  action="{{ route('solicitacredito.update', ['id' => $solicitudcredito->id]) }}" >
+        <form class="mt-4" method="POST" action="{{ route('solicitacredito.update', ['id' => $solicitudcredito->id]) }}">
 
             @csrf
 
@@ -34,7 +34,7 @@ rounded-lg shadow-lg">
                 class="border border-gray-200 rounded-md bg-gray-200 w-full
     text-lg placeholder-gray-900 p-2 my-2 focus:bg-white"
                 placeholder="Ingresa la cantidad de cuotas" value="{{ $solicitudcredito->cuotas }}" id="cuotas"
-                name="cuotas" >
+                name="cuotas">
 
             @error('cuotas')
                 <p class="border border-red-500 rounded-md bg-red-100 w-full
@@ -70,10 +70,13 @@ rounded-lg shadow-lg">
                 class="border border-gray-200 rounded-md bg-gray-200 w-full
             text-lg placeholder-gray-900 p-2 my-2 focus:bg-white">
                 <option value="{{ $solicitudcredito->estado }}">Selecciona el estado </option>
-                @if (auth()->check() && auth()->user()->rol == 'gerente')
+                @if (auth()->check() && (auth()->user()->rol == 'gerente' || auth()->user()->rol == 'asesor'))
                     <option value="A">Aprobado</option>
+                    <option value="R">Rechazado</option>
+                @else
+                    <option value="C">Cancelado</option>
                 @endif
-                <option value="C">Cancelado</option>
+
             </select>
 
             @error('estado')
@@ -109,10 +112,11 @@ rounded-lg shadow-lg">
 
 
                 @foreach ($tipocredito as $tipo)
-                <option value="{{ $tipo->id }}" {{ $tipo->id == $solicitudcredito->tipo_credito_id ? 'selected' : '' }}>
-                    {{ $tipo->nombrecredito }}
-                </option>
-            @endforeach
+                    <option value="{{ $tipo->id }}"
+                        {{ $tipo->id == $solicitudcredito->tipo_credito_id ? 'selected' : '' }}>
+                        {{ $tipo->nombrecredito }}
+                    </option>
+                @endforeach
 
             </select>
 
@@ -125,7 +129,7 @@ rounded-lg shadow-lg">
 
 
             <h6 class="text-1xl text-center font-bold">Observaciones del asesorn</h6>
-            <textarea id="observaciones_asesor" disabled 
+            <textarea id="observaciones_asesor" disabled
                 class="border border-gray-200 rounded-md bg-gray-200 w-full
     text-lg placeholder-gray-900 p-2 my-2 focus:bg-white"
                 name="observaciones_asesor" rows="4" cols="50">
@@ -140,7 +144,8 @@ rounded-lg shadow-lg">
 
 
             <button type="submit"
-                class="btn btn-primary rounded-md w-full text-lg text-white font-semibold p-2 my-3 hover:bg-indigo-600">Actualizar solicitud</button>
+                class="btn btn-primary rounded-md w-full text-lg text-white font-semibold p-2 my-3 hover:bg-indigo-600">Actualizar
+                solicitud</button>
 
         </form>
 

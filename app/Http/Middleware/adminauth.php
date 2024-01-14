@@ -16,8 +16,10 @@ class adminauth
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check()) {
-            if (auth()->check() && (auth()->user()->rol == 'admin' || auth()->user()->rol == 'gerente')) {
+            if (auth()->check() && (auth()->user()->rol == 'admin')) {
                 return $next($request);
+            }else{
+                return redirect()->to('/');
             }
         }
         return redirect()->to('/');

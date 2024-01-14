@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\tipocredito;
+use App\Models\User;
 use App\Models\credito;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,26 @@ class CreditoController extends Controller
      */
     public function index()
     {
-        //
+
+        if (auth()->check() && (auth()->user()->rol == 'gerente' || auth()->user()->rol == 'admin' || auth()->user()->rol == 'asesor')) {
+            $creditos['creditos'] = credito::all();
+        } else {
+
+            // Obtener el ID del usuario autenticado
+            $clienteId = auth()->user()->id;
+            // Obtener todas las solicitudes de crédito asociadas al cliente
+            $creditos['creditos'] = credito::where('cliente_id', $clienteId)->get();
+        }
+
+        $user['user'] = User::all();
+        $tipocredito['tipocredito'] = tipocredito::all();
+
+        // Combinar $datos y $tipocredito en un solo array
+        $Data = array_merge($creditos, $user, $tipocredito);
+
+        // Pasar el array combinado a la vista
+        return view('credito/index', $Data);
+
     }
 
     /**
